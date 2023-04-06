@@ -14,11 +14,14 @@ enum CollisionTypes: UInt32 {
     case star = 4
     case vortex = 8
     case finish = 16
+    case blackhole = 32
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var player: SKSpriteNode!
     var lastTouchPosition: CGPoint?
+    
+    var level = 1
     
     var isGameOver = false
     
@@ -54,7 +57,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func loadLevel() {
-        guard let levelURL = Bundle.main.url(forResource: "level1", withExtension: "txt") else {
+        guard let levelURL = Bundle.main.url(forResource: "level\(level)", withExtension: "txt") else {
             fatalError("Could not find level1.txt in the app bundle.")
         }
         guard let levelString = try? String(contentsOf: levelURL) else {
@@ -66,60 +69,99 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for (row, line) in lines.reversed().enumerated() {
             for (column, letter) in line.enumerated() {
                 let position = CGPoint(x: (64 * column) + 32, y: (64 * row) + 32)
-                
-                if letter == "x" {
-                    // load wall
-                    let node = SKSpriteNode(imageNamed: "block")
-                    node.position = position
-
-                    node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
-                    node.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
-                    node.physicsBody?.isDynamic = false
-                    addChild(node)
-                } else if letter == "v"  {
-                    // load vortex
-                    let node = SKSpriteNode(imageNamed: "vortex")
-                    node.name = "vortex"
-                    node.position = position
-                    node.run(SKAction.repeatForever(SKAction.rotate(byAngle: .pi, duration: 1)))
-                    node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
-                    node.physicsBody?.isDynamic = false
-
-                    node.physicsBody?.categoryBitMask = CollisionTypes.vortex.rawValue
-                    node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
-                    node.physicsBody?.collisionBitMask = 0
-                    addChild(node)
-                } else if letter == "s"  {
-                    // load star
-                    let node = SKSpriteNode(imageNamed: "star")
-                    node.name = "star"
-                    node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
-                    node.physicsBody?.isDynamic = false
-
-                    node.physicsBody?.categoryBitMask = CollisionTypes.star.rawValue
-                    node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
-                    node.physicsBody?.collisionBitMask = 0
-                    node.position = position
-                    addChild(node)
-                } else if letter == "f"  {
-                    // load finish
-                    let node = SKSpriteNode(imageNamed: "finish")
-                    node.name = "finish"
-                    node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
-                    node.physicsBody?.isDynamic = false
-
-                    node.physicsBody?.categoryBitMask = CollisionTypes.finish.rawValue
-                    node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
-                    node.physicsBody?.collisionBitMask = 0
-                    node.position = position
-                    addChild(node)
-                } else if letter == " " {
-                    // this is an empty space – do nothing!
-                } else {
-                    fatalError("Unknown level letter: \(letter)")
-                }
+                createNode(letter: letter, position: position)
             }
         }
+        
+    }
+    
+    func createNode(letter: Character, position: CGPoint) {
+        if letter == "x" {
+            addWall(position: position)
+        } else if letter == "v"  {
+            addVortex(position: position)
+        } else if letter == "s"  {
+            addStar(position: position)
+        } else if letter == "f"  {
+            addFinish(position: position)
+        } else if letter == "b" {
+            addBlackHole(position: position)
+        } else if letter == " " {
+            // this is an empty space – do nothing!
+        } else {
+            fatalError("Unknown level letter: \(letter)")
+        }
+    }
+
+    func addWall(position: CGPoint) {
+        let node = SKSpriteNode(imageNamed: "block")
+        node.position = position
+
+        node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
+        node.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
+        node.physicsBody?.isDynamic = false
+        
+        addChild(node)
+}
+    
+    func addVortex(position: CGPoint) {
+        let node = SKSpriteNode(imageNamed: "vortex")
+        node.name = "vortex"
+        node.position = position
+        node.run(SKAction.repeatForever(SKAction.rotate(byAngle: .pi, duration: 1)))
+        node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+        node.physicsBody?.isDynamic = false
+
+        node.physicsBody?.categoryBitMask = CollisionTypes.vortex.rawValue
+        node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+        node.physicsBody?.collisionBitMask = 0
+        
+        addChild(node)
+    }
+    
+    func addStar(position: CGPoint) {
+        let node = SKSpriteNode(imageNamed: "star")
+        node.name = "star"
+        node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+        node.physicsBody?.isDynamic = false
+
+        node.physicsBody?.categoryBitMask = CollisionTypes.star.rawValue
+        node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+        node.physicsBody?.collisionBitMask = 0
+        node.position = position
+        
+        addChild(node)
+    }
+    
+    func addFinish(position: CGPoint) {
+        let node = SKSpriteNode(imageNamed: "finish")
+        node.name = "finish"
+        node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+        node.physicsBody?.isDynamic = false
+
+        node.physicsBody?.categoryBitMask = CollisionTypes.finish.rawValue
+        node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+        node.physicsBody?.collisionBitMask = 0
+        node.position = position
+        
+        addChild(node)
+    }
+    
+    func addBlackHole(position: CGPoint) {
+        let node = SKSpriteNode(imageNamed: "blackhole")
+        node.name = "blackhole"
+        node.xScale = 0.09
+        node.yScale = 0.09
+        node.position = position
+        node.run(SKAction.repeatForever(SKAction.rotate(byAngle: .pi, duration: 1)))
+        node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+        node.physicsBody?.isDynamic = false
+
+        node.physicsBody?.categoryBitMask = CollisionTypes.blackhole.rawValue
+        node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+        node.physicsBody?.collisionBitMask = 0
+        
+        addChild(node)
     }
     
     func createPlayer() {
@@ -195,8 +237,55 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if node.name == "star" {
             node.removeFromParent()
             score += 1
+        } else if node.name == "blackhole" {
+            teleportation(portalNode: node)
         } else if node.name == "finish" {
             // next level?
+            let congrats = SKSpriteNode(imageNamed: "congrats")
+            congrats.position = CGPoint(x: 512, y: 384)
+            congrats.zPosition = 2
+            addChild(congrats)
+            
+            let fadeAction = SKAction.fadeOut(withDuration: 1.5)
+            let removeAction = SKAction.customAction(withDuration: 1.5) { _,_ in
+                congrats.removeFromParent()
+            }
+            let sequence = SKAction.sequence([fadeAction, removeAction])
+            congrats.run(sequence)
+            
+            unloadLevel()
+            
+            level += 1
+            
+            if level > 2 {
+                level = 1
+            }
+            
+            loadLevel()
+            createPlayer()
         }
+    }
+    
+    func teleportation(portalNode: SKNode) {
+        player.physicsBody?.isDynamic = false
+        let otherPortalNode = children.filter { $0.name == "blackhole" && $0 != portalNode }.first as? SKSpriteNode
+        
+        guard let destination = otherPortalNode?.position else { return }
+        
+        let teleportEffect = SKAction.sequence([
+            SKAction.move(to: CGPoint(x: destination.x - 64, y: destination.y), duration: 0)
+        ])
+        
+        player.run(teleportEffect)
+        player.physicsBody?.isDynamic = true
+    }
+    
+    func unloadLevel() {
+        for node in children {
+            if ["wall", "block", "vortex", "star", "finish", "blackhole"].contains(node.name) {
+                node.removeFromParent()
+            }
+        }
+        player.removeFromParent()
     }
 }
