@@ -15,6 +15,7 @@
 		328B6DC929DCB7A700C0741C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 328B6DC829DCB7A700C0741C /* Assets.xcassets */; };
 		328B6DCC29DCB7A700C0741C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 328B6DCA29DCB7A700C0741C /* LaunchScreen.storyboard */; };
 		328B6DD329DCBCAC00C0741C /* level1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 328B6DD229DCBCAC00C0741C /* level1.txt */; };
+		328B6DF529DE27B000C0741C /* level2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 328B6DF429DE27B000C0741C /* level2.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		328B6DC829DCB7A700C0741C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		328B6DCB29DCB7A700C0741C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		328B6DD229DCBCAC00C0741C /* level1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = level1.txt; path = ../../Content/level1.txt; sourceTree = "<group>"; };
+		328B6DF429DE27B000C0741C /* level2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = level2.txt; path = ../../Content/level2.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 				328B6DC829DCB7A700C0741C /* Assets.xcassets */,
 				328B6DCA29DCB7A700C0741C /* LaunchScreen.storyboard */,
 				328B6DD229DCBCAC00C0741C /* level1.txt */,
+				328B6DF429DE27B000C0741C /* level2.txt */,
 			);
 			path = "Project 26";
 			sourceTree = "<group>";
@@ -131,6 +134,7 @@
 			files = (
 				328B6DD329DCBCAC00C0741C /* level1.txt in Resources */,
 				328B6DC729DCB7A600C0741C /* Main.storyboard in Resources */,
+				328B6DF529DE27B000C0741C /* level2.txt in Resources */,
 				328B6DBE29DCB7A600C0741C /* GameScene.sks in Resources */,
 				328B6DC929DCB7A700C0741C /* Assets.xcassets in Resources */,
 				328B6DCC29DCB7A700C0741C /* LaunchScreen.storyboard in Resources */,
